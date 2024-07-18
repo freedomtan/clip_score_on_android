@@ -18,3 +18,24 @@ cc_binary(
         "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
     ],
 )
+
+cc_binary(
+    name = "read_tfrecord",
+    srcs = ["read_tfrecord.cc"],
+    copts = tflite_copts(),
+    linkopts = android_linkopts(),
+    deps = [
+        "@com_google_absl//absl/strings",
+        "@org_tensorflow//tensorflow/lite:framework",
+        "@org_tensorflow//tensorflow/lite/kernels:builtin_ops",
+    ] + select({
+        "@org_tensorflow//tensorflow:android": [
+            "@org_tensorflow//tensorflow/core:portable_tensorflow_lib_lite",
+        ],
+        "//conditions:default": [
+            "@org_tensorflow//tensorflow/core:framework",
+            "@org_tensorflow//tensorflow/core:lib",
+            "@org_tensorflow//tensorflow/core:protos_all_cc",
+        ],
+    }),
+)
